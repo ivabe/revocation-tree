@@ -1,7 +1,7 @@
-include "./circomlib/circuits/eddsaposeidon.circom"
-include "./circomlib/circuits/poseidon.circom"
-include "./merkleproof.circom"
-include "./circomlib/circuits/comparators.circom"
+include "./circomlib/circuits/eddsaposeidon.circom";
+include "./circomlib/circuits/poseidon.circom";
+include "./merkleproof.circom";
+include "./circomlib/circuits/comparators.circom";
 
 template CheckMetaDataIntegrity(depth) {
     signal input path[depth];

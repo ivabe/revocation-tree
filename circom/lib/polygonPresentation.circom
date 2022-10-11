@@ -1,5 +1,5 @@
-include "../../lib/metaData.circom"
-include "../../lib/contentData.circom"
+include "../../lib/metaData.circom";
+include "../../lib/contentData.circom";
 
 template PolygonPresentation(depth, revocationDepth, polygonSize) {
 		/*

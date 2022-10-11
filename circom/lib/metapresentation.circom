@@ -1,8 +1,8 @@
-include "./merkleproof.circom"
-include "./circomlib/circuits/comparators.circom"
-include "./circomlib/circuits/poseidon.circom"
-include "./circomlib/circuits/eddsaposeidon.circom"
-include "./lib/circomlib/circuits/gates.circom"
+include "./merkleproof.circom";
+include "./circomlib/circuits/comparators.circom";
+include "./circomlib/circuits/poseidon.circom";
+include "./circomlib/circuits/eddsaposeidon.circom";
+include "./lib/circomlib/circuits/gates.circom";
 
 template MetaPresentation(depth) {
 		signal private input pathMeta[depth];

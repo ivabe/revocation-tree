@@ -1,8 +1,8 @@
-include "../../lib/merkleproof.circom"
-include "../../lib/circomlib/circuits/comparators.circom"
-include "../../lib/circomlib/circuits/poseidon.circom"
-include "../../lib/circomlib/circuits/eddsaposeidon.circom"
-include "../../lib/circomlib/circuits/gates.circom"
+include "../../lib/merkleproof.circom";
+include "../../lib/circomlib/circuits/comparators.circom";
+include "../../lib/circomlib/circuits/poseidon.circom";
+include "../../lib/circomlib/circuits/eddsaposeidon.circom";
+include "../../lib/circomlib/circuits/gates.circom";
 
 template DelegationPresentation(depth, revocDepth) {
 		/*
