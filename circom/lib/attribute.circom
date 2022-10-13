@@ -1,8 +1,9 @@
-include "../../lib/merkleproof.circom";
-include "../../lib/circomlib/circuits/comparators.circom";
-include "../../lib/circomlib/circuits/poseidon.circom";
-include "../../lib/circomlib/circuits/eddsaposeidon.circom";
-include "../../lib/circomlib/circuits/gates.circom";
+include "./merkleproof.circom";
+include "./circomlib/circuits/comparators.circom";
+include "./circomlib/circuits/poseidon.circom";
+include "./circomlib/circuits/eddsaposeidon.circom";
+include "./circomlib/circuits/gates.circom";
+include "./circomlib/circuits/bitify.circom";
 
 template AttributePresentation(depth, revocDepth) {
 		/*
@@ -120,14 +121,16 @@ template AttributePresentation(depth, revocDepth) {
 				merkleProofRevocation.lemma[i + 1] <== lemmaRevocation[i + 1];
 		}	
 		// Check revocation in revocationLeaf
-		signal div <-- meta[0] \ 252;
-		signal position <-- meta[0] - (252 * div);
-		div * 252 + position === meta[0];
-		signal div2 <-- revocationLeaf \ (2 ** position);
-		div2 * (2 ** position) + (revocationLeaf - (2 ** position * div2)) ==> revocationLeaf;
-		signal div3 <-- div2 \ 2;
-		revoked <==  div2 - (2 * div3);
-		div3 * 2 + revoked === div2; 
+		signal div <-- meta[0] \ 252;//TODO: check if there is a modular operation?!
+        signal position <-- meta[0] - (252 * div);//TODO: check if there is a modular operation?!
+        div * 252 + position === meta[0];//TODO: extract the chunk to a module
+        //position <= 251;//TODO: include a range proof for the position
+        //position >= 0;//TODO: check if it might be a negative number, issuers just guarantees that?!
+
+		component num2BitsBy252 = Num2Bits(252);
+		num2BitsBy252.in <== revocationLeaf;
+		signal output revocationBit <== num2BitsBy252.out[position];//TODO: make sure it works
+
 		// Hash challenge issuers ppk
 		component hashMeta3 = Poseidon(3);
 		challenge ==> hashMeta3.inputs[0];	
