@@ -33,9 +33,9 @@ template CheckMetaDataIntegrity(depth) {
     eddsaVerify.S <== signature[2];
     eddsaVerify.M <== lemma[depth + 1];
 
-    component merkleTree = MerkleTree(3);
+    component merkleTree = MerkleTree(3); //depth 3 == 2**3 = 8 leaves
 
-    hash[0].inputs[0] <== meta[0]
+    hash[0].inputs[0] <== meta[0];
     merkleTree.data[0] <== hash[0].out; 
 
     merkleTree.data[1] <== meta[1];
@@ -80,7 +80,7 @@ template CheckExpiration() {
 
     component le = LessEqThan(64);
     le.in[0] <== expirationPresentation;
-    le.in[1] <== expirationCredential
+    le.in[1] <== expirationCredential;
     1 === le.out;
 }
 
@@ -192,7 +192,7 @@ template CheckRevocation(depth) {
 
     revoked <== div[3].mod;
 
-    revocationRoot <== lemma[depth + 1];
+    revocationRoot <== 1;
 }
 
 template Link() {

@@ -1,21 +1,21 @@
-include "../../lib/metaData.circom";
-include "../../lib/contentData.circom";
+include "./metaData.circom";
+include "./contentData.circom";
 
 template DelegationPresentation(depth, revocationDepth) {
 		/*
 		* Private Inputs
 		*/
 		// Meta
-		signal private input pathMeta[depth];
-		signal private input lemmaMeta[depth + 2];
-		signal private input meta[8]; //Fixed Size of meta attributes in each credential
-		signal private input signatureMeta[3];
-		signal private input pathRevocation[revocationDepth];
-		signal private input lemmaRevocation[revocationDepth + 2];
-		signal private input revocationLeaf;
-		signal private input issuerPK[2]; //7 8
+		signal input pathMeta[depth];
+		signal input lemmaMeta[depth + 2];
+		signal input meta[8]; //Fixed Size of meta attributes in each credential
+		signal input signatureMeta[3];
+		signal input pathRevocation[revocationDepth];
+		signal input lemmaRevocation[revocationDepth + 2];
+		signal input revocationLeaf;
+		signal input issuerPK[2]; //7 8
 		// Content
-		signal private input lemma[depth + 2];
+		signal input lemma[depth + 2];
 		/*
 		* Public Inputs
 		*/
@@ -44,9 +44,9 @@ template DelegationPresentation(depth, revocationDepth) {
 		checkMetaDataIntegrity.issuerPK[0] <== issuerPK[0];
 		checkMetaDataIntegrity.issuerPK[1] <== issuerPK[1];
 
-		checkMetaDataIntegrity.signatureMeta[0] <== signatureMeta[0];
-		checkMetaDataIntegrity.signatureMeta[1] <== signatureMeta[1];
-		checkMetaDataIntegrity.signatureMeta[2] <== signatureMeta[2];
+		checkMetaDataIntegrity.signature[0] <== signatureMeta[0];
+		checkMetaDataIntegrity.signature[1] <== signatureMeta[1];
+		checkMetaDataIntegrity.signature[2] <== signatureMeta[2];
 
 		for(var i = 0; i < 8; i++) {
 			checkMetaDataIntegrity.meta[i] <== meta[i];
