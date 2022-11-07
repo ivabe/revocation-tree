@@ -9,3 +9,7 @@ RUN /root/.cargo/bin/cargo install --path /app/installation/circom/circom
 #TODO: get rid of the redundant "circom" pfolder in the "installation" folder (above)
 RUN git clone https://github.com/iden3/circomlib.git /app/circom/lib/circomlib
 RUN npm install -g snarkjs@latest
+
+# Install heimdalljs
+WORKDIR /app/heimdalljs
+RUN npm install
