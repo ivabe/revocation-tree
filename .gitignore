@@ -1,4 +1,14 @@
+# circom files
+*.r1cs
+*.sym
+*.wasm
 *.ptau
+
+# circom compiled files
+test_out_files/
+generate_witness.js
+witness_calculator.js
+
 # Logs
 logs
 *.log
@@ -117,3 +127,6 @@ dist
 .pnp.*
 
 .idea
+
+#MAC OS
+.DS_Store
