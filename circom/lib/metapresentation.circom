@@ -5,16 +5,16 @@ include "./circomlib/circuits/eddsaposeidon.circom";
 include "./lib/circomlib/circuits/gates.circom";
 
 template MetaPresentation(depth) {
-		signal private input pathMeta[depth];
-		signal private input lemmaMeta[depth + 2];
-		//Fixed Size of meta attributes in each credential
-		signal private input meta[8];
-		signal private input signature[3];
-		signal private input issuerPK[2];
-		signal private input pathRevocation[4];
-		signal private input lemmaRevocation[4 + 2];
-		signal private input revocationLeaf;
-		signal private input signChallenge[3];
+		signal input pathMeta[depth];
+		signal input lemmaMeta[depth + 2];
+		//Fixed size of meta attributes in each credential
+		signal input meta[8];
+		signal input signature[3];
+		signal input issuerPK[2];
+		signal input pathRevocation[4];
+		signal input lemmaRevocation[4 + 2];
+		signal input revocationLeaf;
+		signal input signChallenge[3];
 
 		signal input challenge;
 		signal input expiration;
@@ -106,7 +106,7 @@ template MetaPresentation(depth) {
 		// Check revocation in revocationLeaf
 		signal div <-- meta[0] \ 252;
 		signal position <-- meta[0] - (252 * div);
-		div * 252 + position === meta[0]
+		div * 252 + position === meta[0];
 		signal div2 <-- revocationLeaf \ (2 ** position);
 		div2 * (2 ** position) + (revocationLeaf - (2 ** position * div2)) == revocationLeaf;
 		signal div3 <-- div2 \ 2;

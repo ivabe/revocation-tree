@@ -1,4 +1,4 @@
-include "../../lib/merkleproof.circom";
+include "./merkleproof.circom";
 include "../../lib/circomlib/circuits/comparators.circom";
 include "../../lib/circomlib/circuits/poseidon.circom";
 include "../../lib/circomlib/circuits/eddsaposeidon.circom";
@@ -9,16 +9,16 @@ template DelegationPresentation(depth, revocDepth) {
 		* Private Inputs
 		*/
 		// Meta
-		signal private input pathMeta[depth];
-		signal private input lemmaMeta[depth + 2];
-		signal private input meta[8]; //Fixed Size of meta attributes in each credential
-		signal private input signatureMeta[3];
-		signal private input pathRevocation[revocDepth];
-		signal private input lemmaRevocation[revocDepth + 2];
-		signal private input revocationLeaf;
-		signal private input issuerPK[2]; //7 8
+		signal input pathMeta[depth];
+		signal input lemmaMeta[depth + 2];
+		signal input meta[8]; //Fixed Size of meta attributes in each credential
+		signal input signatureMeta[3];
+		signal input pathRevocation[revocDepth];
+		signal input lemmaRevocation[revocDepth + 2];
+		signal input revocationLeaf;
+		signal input issuerPK[2]; //7 8
 		// Content
-		signal private input lemma[depth + 2];
+		signal input lemma[depth + 2];
 		/*
 		* Public Inputs
 		*/
@@ -106,7 +106,7 @@ template DelegationPresentation(depth, revocDepth) {
 		leafIndex1 <-- meta[0] \ 252;
 		var leafIndex2 = 0;
 		for (var i=0; i<revocDepth; i++) {
-			leafIndex2 += pathRevocation[i] * (2 ** i)
+			leafIndex2 += pathRevocation[i] * (2 ** i);
 		}
 		leafIndex1 === leafIndex2;
 		// Check revocation list with merkle proof
@@ -122,7 +122,7 @@ template DelegationPresentation(depth, revocDepth) {
 		// Check revocation in revocationLeaf
 		signal div <-- meta[0] \ 252;
 		signal position <-- meta[0] - (252 * div);
-		div * 252 + position === meta[0]
+		div * 252 + position === meta[0];
 		signal div2 <-- revocationLeaf \ (2 ** position);
 		div2 * (2 ** position) + (revocationLeaf - (2 ** position * div2)) == revocationLeaf;
 		signal div3 <-- div2 \ 2;

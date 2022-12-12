@@ -5,6 +5,9 @@ include "./circomlib/circuits/eddsaposeidon.circom";
 include "./circomlib/circuits/gates.circom";
 include "./circomlib/circuits/bitify.circom";
 
+// include for revocation bit
+include "./util.circom";
+
 template AttributePresentation(depth, revocDepth) {
 		/*
 		* Private Inputs
@@ -121,15 +124,29 @@ template AttributePresentation(depth, revocDepth) {
 				merkleProofRevocation.lemma[i + 1] <== lemmaRevocation[i + 1];
 		}	
 		// Check revocation in revocationLeaf
-		signal div <-- meta[0] \ 252;//TODO: check if there is a modular operation?!
-        signal position <-- meta[0] - (252 * div);//TODO: check if there is a modular operation?!
-        div * 252 + position === meta[0];//TODO: extract the chunk to a module
-        //position <= 251;//TODO: include a range proof for the position
-        //position >= 0;//TODO: check if it might be a negative number, issuers just guarantees that?!
+		var div = meta[0] \ 252; // merkle tree leaf number -> e.g. id 1234500 / 252 = 4898-th leave 
+		var position = meta[0] - (252 * div); // leave's bit position k e.g. id 1234500 - (252*4989) = 204-th
+		meta[0] === div * 252 + position; 
+		assert(0 <= position <= 251); // Ensure values are not negatives nor excessively larger
+		/*
+		component greaterThan = GreaterThan(252);
+		greaterThan.in[0] <== position;
+		greaterThan.in[1] <== 0;
+		greaterThan.out === 1 ; // Is position greater than 0?
 
-		component num2BitsBy252 = Num2Bits(252);
-		num2BitsBy252.in <== revocationLeaf;
-		signal output revocationBit <== num2BitsBy252.out[position];//TODO: make sure it works
+		component lessThan = LessThan(252);
+		lessThan.in[0] <== position;
+		lessThan.in[1] <== 252;
+		lessThan.out === 1 ; // Is position smaller than 252?
+		*/
+		// Get k-th bit position value from a leave
+		signal output revocationBit;
+		component extractKthBit = extractKthBit(253);
+		//inputs
+		extractKthBit.in <== revocationLeaf;
+    	extractKthBit.k <== position;
+		// bit value output
+		revocationBit <== extractKthBit.outBit;
 
 		// Hash challenge issuers ppk
 		component hashMeta3 = Poseidon(3);
