@@ -11,6 +11,9 @@ Heimdall is a SSI framework based on generic ZKPs.
 - Link the package to the path `sudo npm link`
 - Heimdall is now available by the command `heimdalljs`
 
+## Test
+- Run Mocha tests `npm run test`
+
 ## Usage
 The files example-run.sh provide an example run for heimdalljs using the individual presentation types. Run and inspect the scripts. They are located in heimdalljs/test/*
 
