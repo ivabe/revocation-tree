@@ -1,0 +1,16 @@
+{
+  "name": "circom-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "lib/trusted-setup.js",
+  "scripts": {
+    "test": "mocha ./lib/*.spec.js --timeout 1000000"
+  },
+  "author": "Egor Ermolaev",
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "4.3.7",
+    "mocha": "10.2.0",
+    "snarkjs": "latest"
+  }
+}
