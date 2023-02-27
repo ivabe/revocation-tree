@@ -1,42 +1,8 @@
-const exec = require('util').promisify(require('child_process').exec);
-const fs = require("fs").promises;
+const {
+    prepareTestFolder, prepareTestCircomFile, compileCircuit, getSnarkjsInfo, writeInputJsonFile, exec,
+    readOutputJsonFile, logger
+} = require("./util/helper");
 const expect = require('chai').expect;
-
-const logger = ({stdout, stderr}) => {
-    if (stdout)
-        console.log(stdout);
-    if (stderr)
-        console.error(stderr);
-};
-
-const doesDirectoryExist = async directory => {
-    try {
-        await fs.access(directory);
-        return true;
-    } catch (e) {
-        // console.warn(e);
-        return false;
-    }
-};
-const createTestDirectory = async directory => await exec(`mkdir ${directory}`).then(logger);
-const removeDirectory = async directory => await exec(`rm -r ${directory}`).then(logger);
-const prepareTestFolder = async directory => {
-    if (await doesDirectoryExist(directory))
-        await removeDirectory(directory);
-    await createTestDirectory(directory);
-};
-
-const prepareTestCircomFile = async (originalFilePath, testFilePath, appendixCircuit) => {
-    await exec(`cp ${originalFilePath} ${testFilePath}`).then(logger);
-    await exec(`echo "${appendixCircuit}" >> ${testFilePath}`).then(logger);
-};
-
-const getSnarkjsInfo = async r1csFilePath => await exec(`snarkjs info -c ${r1csFilePath}`).then(logger);
-
-const compileCircuit = async (circomFilePath, outputFolderPath) => await exec(`circom ${circomFilePath} --r1cs --wasm --sym --output  ${outputFolderPath}`).then(logger);
-
-const writeInputJsonFile = async (path, json) => await fs.writeFile(path, JSON.stringify(json));
-const readOutputJsonFile = async path => JSON.parse((await fs.readFile(path)).toString());
 
 const pathToTestDirectory = './lib/';
 console.debug('pathToTestDirectory >> ', pathToTestDirectory);
@@ -118,7 +84,7 @@ describe('util.circom template', async function () {
         it('Now && 01.11.1995', async function () {
             const myDateOfBirthInMsString = "815217900000";//01.11.1995 in ms
             const nowInMsString = Date.now().toString();
-            const outputJsonFile =  await isOlderThan18(nowInMsString, myDateOfBirthInMsString, "01-11-1995-");
+            const outputJsonFile = await isOlderThan18(nowInMsString, myDateOfBirthInMsString, "01-11-1995-");
             const expectedOutputJsonFile = [
                 "1",
                 nowInMsString
@@ -128,7 +94,7 @@ describe('util.circom template', async function () {
 
         it('Now && Now', async function () {
             const nowInMsString = Date.now().toString();
-            const outputJsonFile =  await isOlderThan18(nowInMsString, nowInMsString, "just-now-");
+            const outputJsonFile = await isOlderThan18(nowInMsString, nowInMsString, "just-now-");
             const expectedOutputJsonFile = [
                 "0",
                 nowInMsString
