@@ -4,53 +4,45 @@ const {
 } = require("./util/helper");
 const expect = require('chai').expect;
 
-const pathToTestDirectory = './lib/';
-console.debug('pathToTestDirectory >> ', pathToTestDirectory);
+const getConfig = fileName => ({
+    pathToTestDirectory: './lib/',
+    fileName: fileName,
+    testFileName: 'test.' + fileName,
+    circomFileName: fileName + '.circom',
+    circomTestFileName: 'test.' + fileName + '.circom',
+    pathToCircomFile: './lib/' + fileName + '.circom',
+    pathToCircomTestFile: './lib/' + 'test.' + fileName + '.circom',
+    testFolderName: 'test.' + fileName,
+    pathToTestFolder: './lib/' + 'test.' + fileName,
+    powerOfTauFile: './lib/' + 'powersOfTau28_hez_final_16.ptau',
+    r1csFile: `${'./lib/' + 'test.' + fileName}/${'test.' + fileName}.r1cs`,
+    zkeyInitialFile: `${'./lib/' + 'test.' + fileName}/${'test.' + fileName}.initial.zkey`,
+    zkeyFinalFile: `${'./lib/' + 'test.' + fileName}/${'test.' + fileName}.final.zkey`,
+    verificationKeyFile: `${'./lib/' + 'test.' + fileName}/${'test.' + fileName}.verification.key.json`,
+    wasmFile: `${'./lib/' + 'test.' + fileName}/${'test.' + fileName}_js/${'test.' + fileName}.wasm`,
+    generateWitnessFile: `${'./lib/' + 'test.' + fileName}/${'test.' + fileName}_js/generate_witness.js`,
+    wtnsFile: `${'./lib/' + 'test.' + fileName}/${'test.' + fileName}.witness.wasm`,
+    proofFile: `${'./lib/' + 'test.' + fileName}/${'test.' + fileName}.proof.json`,
+});
+const config = getConfig('older');
 
-const fileName = 'older';
-const testFileName = 'test.' + fileName;
-const circomFileName = fileName + '.circom';
-const circomTestFileName = 'test.' + circomFileName;
-console.debug('fileName >> ', fileName);
-console.debug('testFileName >> ', testFileName);
-console.debug('circomFileName >> ', circomFileName);
-console.debug('circomTestFileName >> ', circomTestFileName);
-
-const pathToCircomFile = pathToTestDirectory + circomFileName;
-const pathToCircomTestFile = pathToTestDirectory + circomTestFileName;
-console.debug('pathToCircomFile >> ', pathToCircomFile);
-console.debug('pathToCircomTestFile >> ', pathToCircomTestFile);
-
-const testFolderName = 'test-' + fileName;
-const pathToTestFolder = pathToTestDirectory + testFolderName;
-console.debug('pathToTestFolder >> ', pathToTestFolder);
-
-const powerOfTauFile = './lib/powersOfTau28_hez_final_16.ptau';
-console.debug('powerOfTauFile >> ', powerOfTauFile);
-
-const r1csFile = `${pathToTestFolder}/${testFileName}.r1cs`;
-const zkeyInitialFile = `${pathToTestFolder}/${testFileName}.initial.zkey`;
-const zkeyFinalFile = `${pathToTestFolder}/${testFileName}.final.zkey`;
-const verificationKeyFile = `${pathToTestFolder}/${testFileName}.verification.key.json`;
-console.debug('r1csFile >> ', r1csFile);
-console.debug('zkeyInitialFile >> ', zkeyInitialFile);
-console.debug('zkeyFinalFile >> ', zkeyFinalFile);
-console.debug('verificationKeyFile >> ', verificationKeyFile);
-
-const wasmFile = `${pathToTestFolder}/${testFileName}_js/${testFileName}.wasm`;
-const generateWitnessFile = `${pathToTestFolder}/${testFileName}_js/generate_witness.js`;
-const wtnsFile = `${pathToTestFolder}/${testFileName}.witness.wasm`;
-console.debug('wasmFile >> ', wasmFile);
-console.debug('wtnsFile >> ', wtnsFile);
-
-const proofFile = `${pathToTestFolder}/${testFileName}.proof.json`;
-console.debug('proofFile >> ', proofFile);
+console.debug('config >> ', JSON.stringify(config, null, 2));
 
 const isOlderThan18 = async (now, birthday, testCaseMarker) => {
     const inputJsonFile = {
         "dateOfBirth": birthday,
         "now": now,
     };
+
+    const {
+        pathToTestFolder,
+        testFileName,
+        generateWitnessFile,
+        wasmFile,
+        wtnsFile,
+        zkeyFinalFile,
+        proofFile
+    } = config;
 
     const pathToInputJsonFile = `${pathToTestFolder}/${testCaseMarker + testFileName}.input.json`;
     const pathToOutputJsonFile = `${pathToTestFolder}/${testCaseMarker + testFileName}.output.json`;
@@ -66,6 +58,18 @@ const isOlderThan18 = async (now, birthday, testCaseMarker) => {
 };
 
 describe('util.circom template', async function () {
+    const {
+        pathToTestFolder,
+        pathToCircomFile,
+        zkeyFinalFile,
+        pathToCircomTestFile,
+        r1csFile,
+        powerOfTauFile,
+        zkeyInitialFile,
+        fileName,
+        verificationKeyFile
+    } = config;
+
     before(async function () {
         await prepareTestFolder(pathToTestFolder);
 
