@@ -1,32 +1,18 @@
 const {
-    prepareTestFolder, prepareTestCircomFile, compileCircuit, getSnarkjsInfo, writeInputJsonFile, exec,
-    readOutputJsonFile, logger
+    prepareTestFolder,
+    prepareTestCircomFile,
+    compileCircuit,
+    getSnarkjsInfo,
+    writeInputJsonFile,
+    exec,
+    readOutputJsonFile,
+    logger,
+    getConfig,
 } = require("./util/helper");
 const expect = require('chai').expect;
 
-const getConfig = fileName => ({
-    pathToTestDirectory: './lib/',
-    fileName: fileName,
-    testFileName: 'test.' + fileName,
-    circomFileName: fileName + '.circom',
-    circomTestFileName: 'test.' + fileName + '.circom',
-    pathToCircomFile: './lib/' + fileName + '.circom',
-    pathToCircomTestFile: './lib/' + 'test.' + fileName + '.circom',
-    testFolderName: 'test.' + fileName,
-    pathToTestFolder: './lib/' + 'test.' + fileName,
-    powerOfTauFile: './lib/' + 'powersOfTau28_hez_final_16.ptau',
-    r1csFile: `${'./lib/' + 'test.' + fileName}/${'test.' + fileName}.r1cs`,
-    zkeyInitialFile: `${'./lib/' + 'test.' + fileName}/${'test.' + fileName}.initial.zkey`,
-    zkeyFinalFile: `${'./lib/' + 'test.' + fileName}/${'test.' + fileName}.final.zkey`,
-    verificationKeyFile: `${'./lib/' + 'test.' + fileName}/${'test.' + fileName}.verification.key.json`,
-    wasmFile: `${'./lib/' + 'test.' + fileName}/${'test.' + fileName}_js/${'test.' + fileName}.wasm`,
-    generateWitnessFile: `${'./lib/' + 'test.' + fileName}/${'test.' + fileName}_js/generate_witness.js`,
-    wtnsFile: `${'./lib/' + 'test.' + fileName}/${'test.' + fileName}.witness.wasm`,
-    proofFile: `${'./lib/' + 'test.' + fileName}/${'test.' + fileName}.proof.json`,
-});
 const config = getConfig('older');
-
-console.debug('config >> ', JSON.stringify(config, null, 2));
+console.debug('config >>', JSON.stringify(config, null, 2));
 
 const isOlderThan18 = async (now, birthday, testCaseMarker) => {
     const inputJsonFile = {

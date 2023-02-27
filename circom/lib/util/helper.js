@@ -37,6 +37,28 @@ const compileCircuit = async (circomFilePath, outputFolderPath) => await exec(`c
 const writeInputJsonFile = async (path, json) => await fs.writeFile(path, JSON.stringify(json));
 const readOutputJsonFile = async path => JSON.parse((await fs.readFile(path)).toString());
 
+const workingDirectory = './lib/';
+
+const getConfig = fileName => ({
+    fileName: fileName,
+    testFileName: 'test.' + fileName,
+    circomFileName: fileName + '.circom',
+    circomTestFileName: 'test.' + fileName + '.circom',
+    pathToCircomFile: workingDirectory + fileName + '.circom',
+    pathToCircomTestFile: workingDirectory + 'test.' + fileName + '.circom',
+    testFolderName: 'test.' + fileName,
+    pathToTestFolder: workingDirectory + 'test.' + fileName,
+    powerOfTauFile: workingDirectory + 'powersOfTau28_hez_final_16.ptau',
+    r1csFile: workingDirectory + 'test.' + fileName + '/test.' + fileName + '.r1cs',
+    zkeyInitialFile: workingDirectory + 'test.' + fileName + '/test.' + fileName + '.initial.zkey',
+    zkeyFinalFile: workingDirectory + 'test.' + fileName + '/test.' + fileName + '.final.zkey',
+    verificationKeyFile: workingDirectory + 'test.' + fileName + '/test.' + fileName + '.verification.key.json',
+    wasmFile: workingDirectory + 'test.' + fileName + '/test.' + fileName + '_js/test.' + fileName + '.wasm',
+    generateWitnessFile: workingDirectory + 'test.' + fileName + '/test.' + fileName + '_js/generate_witness.js',
+    wtnsFile: workingDirectory + 'test.' + fileName + '/test.' + fileName + '.witness.wasm',
+    proofFile: workingDirectory + 'test.' + fileName + '/test.' + fileName + '.proof.json',
+});
+
 module.exports = {
     exec,
     logger,
@@ -49,4 +71,5 @@ module.exports = {
     compileCircuit,
     writeInputJsonFile,
     readOutputJsonFile,
+    getConfig,
 };
