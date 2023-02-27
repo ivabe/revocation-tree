@@ -43,7 +43,7 @@ const isOlderThan18 = async (now, birthday, testCaseMarker) => {
     return await readOutputJsonFile(pathToOutputJsonFile);
 };
 
-describe('util.circom template', async function () {
+describe('older.circom template', async function () {
     const {
         pathToTestFolder,
         pathToCircomFile,
