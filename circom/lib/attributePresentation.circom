@@ -1,5 +1,6 @@
 include "./metaData.circom";
 include "./contentData.circom";
+include "./checkRevocation.circom";
 
 template AttributePresentation(depth, revocationDepth) {
 	/*
@@ -59,7 +60,6 @@ template AttributePresentation(depth, revocationDepth) {
 	// End – Check Meta Integrity
 
 	type <== checkMetaDataIntegrity.type;
-	//revocationRoot <== lemmaRevocation[revocationDepth + 1];
 	delegatable <== checkMetaDataIntegrity.delegatable;
 
 	// Begin – Check expiration
@@ -71,20 +71,15 @@ template AttributePresentation(depth, revocationDepth) {
 	// Begin - Check Revocation
 	component checkRevocation = CheckRevocation(revocationDepth);
 	checkRevocation.id <== checkMetaDataIntegrity.id;
-	checkRevocation.revocationLeaf <== revocationLeaf;
 	checkRevocation.lemma[0] <== lemmaRevocation[0];
 	checkRevocation.lemma[revocationDepth + 1] <== lemmaRevocation[revocationDepth + 1];
-	/*
 	for(var i = 0; i < revocationDepth; i++) {
 		checkRevocation.path[i] <== pathRevocation[i];
 		checkRevocation.lemma[i + 1] <== lemmaRevocation[i + 1];
 	}
-	*/
-	log(checkRevocation.revocationRoot);
-	log(checkRevocation.revoked);
-	
-	//revocationRoot <== checkRevocation.revocationRoot;
-	//revoked <== checkRevocation.revoked;
+
+	revocationRoot <== checkRevocation.revocationRoot;
+	revoked <== checkRevocation.revoked;
 	// End – Check Revocation
 
 	//Begin - Link Back
