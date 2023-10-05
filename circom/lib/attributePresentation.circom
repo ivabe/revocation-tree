@@ -1,3 +1,4 @@
+pragma circom 2.1.4;
 include "./metaData.circom";
 include "./contentData.circom";
 include "./checkRevocation.circom";
@@ -23,7 +24,6 @@ template AttributePresentation(depth, revocationDepth) {
 	*/
 	// Meta
 	signal input challenge; //7
-	signal input out_challenge;
 	signal input expiration; //8
 	signal output type; // 0
 	signal output revocationRoot; //1
@@ -34,6 +34,8 @@ template AttributePresentation(depth, revocationDepth) {
 	// Content
 	signal input path[depth]; //9
 	signal output attributeHash; //6
+	signal output out_challenge; //7
+	signal output out_expiration; //7
 	/*
 	* Meta calculations
 	*/
@@ -68,6 +70,7 @@ template AttributePresentation(depth, revocationDepth) {
 	checkExpiration.expirationCredential <== checkMetaDataIntegrity.expiration;
 	checkExpiration.expirationPresentation <== expiration;
 	// End – Check expiration
+	out_expiration <== expiration;
 
 	// Begin - Check Revocation
 	component checkRevocation = CheckRevocation(revocationDepth);

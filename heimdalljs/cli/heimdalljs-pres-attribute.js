@@ -41,9 +41,11 @@ const generatePresentationAttribute = async (index, options) => {
             Number(index)
         );
         await presentation.generate();
-        await presentation.verify(poseidonHash);
-        let re = await presentation.verify(poseidonHash);
+        await presentation.verify(poseidonHash, credential);
+        let re = await presentation.verify(poseidonHash, credential);
+        console.log(`Verify meta values against public signals: ${re}`);
         if (re === false) return Promise.reject(re);
+        console.log("Successful Attribute Presentation generation\n");
         return Promise.resolve(presentation);
     } catch (err) {
         return Promise.reject(err);

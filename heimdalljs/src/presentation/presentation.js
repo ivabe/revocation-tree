@@ -86,13 +86,15 @@ class Presentation {
     }
 
     async generate() {
-        //let root = path.join(process.mainModule.paths[0].split("node_modules")[0].slice(0, -1), "../");
-        let root = path.join(require.main.paths[0].split("node_modules")[0].slice(0, -1));
+        let root = path.join(require.main.paths[0].split("node_modules")[0].slice(0, -1), "../");
+        //let root = path.join(require.main.paths[0].split("node_modules")[0].slice(0, -1));
         let t0 = performance.now();
         const {proof, publicSignals} = await snarkjs.groth16.fullProve(
             this.privateInput,
-            path.join(root, "zkp", this.type, "circuit.wasm"),
-            path.join(root, "zkp", this.type, "circuit_final.zkey")
+            //path.join(root, "zkp", this.type, "circuit.wasm"),
+            //path.join(root, "zkp", this.type, "circuit_final.zkey")
+            path.join(root, "zkp", this.type, "ok_attributePresentation.wasm"),
+            path.join(root, "zkp", this.type, "ok_circuit_final.zkey")
         );
         let t1 = performance.now();
         console.log("Prove took " + (t1 - t0) + " milliseconds.");
@@ -101,7 +103,9 @@ class Presentation {
         this.publicSignals = publicSignals;
 
         let res = await this.verifyProof();
-
+        console.log(`Generate groth16 proof, and verify: ${res}`);
+        console.log("Public Signals:")
+        console.log(this.publicSignals);
         // Overwriting private input
         this.privateInput = {};
 
@@ -113,9 +117,10 @@ class Presentation {
     }
 
     async verifyProof() {
-        //let root = path.join(process.mainModule.paths[0].split("node_modules")[0].slice(0, -1), "../");
-        let root = path.join(require.main.paths[0].split("node_modules")[0].slice(0, -1));
-        const vKey = JSON.parse(fs.readFileSync(path.join(root, "zkp", this.type, "verification_key.json")));
+        let root = path.join(require.main.paths[0].split("node_modules")[0].slice(0, -1), "../");
+        //let root = path.join(require.main.paths[0].split("node_modules")[0].slice(0, -1));
+        //const vKey = JSON.parse(fs.readFileSync(path.join(root, "zkp", this.type, "verification_key.json")));
+        const vKey = JSON.parse(fs.readFileSync(path.join(root, "zkp", this.type, "ok_verification_key.json")));
 
         let res = await snarkjs.groth16.verify(vKey, this.publicSignals, this.proof).catch(err => console.error(err));
         if (res === true) {
@@ -148,11 +153,34 @@ class Presentation {
         challengeIndex,
         expirationIndex,
         hasher
-    ) {
+    ) { 
+        /** Public Signals
+            type
+            revocationRoot  
+            revocationRegistry
+            revoked
+            linkBack  
+            delegatable
+            attributeHash
+            challenge
+            expiration
+         * [
+                '6936141895847827773039820306011898011976769516186037164536571405943971461449',
+                '15166994417731503543822836390427671538511444589633480329223617875361059048402',
+                '2709480763505578374265785946171450970079473123863887847949961070331954626384',
+                '0',
+                '16480984838845883908278887403998730505458370097797273028422755199897309800407',
+                '0',
+                '17239002221223401420981429812936542253273189731769780993527026392913274359324',
+                '1234',
+                '1696606287033'
+            ]
+         */
         // Checks if meta type hash from public signal is the same like in public input
         let res = hasher([this.output.meta.type]).toString() === this.publicSignals[typeIndex];
         // Reads revocation root from public signal
         this.output.meta.revocationRoot = this.publicSignals[revocationRootIndex];
+        // Where is the revocation root?
         //res &&= BigInt(revocationRoot) === BigInt(this.output.meta.revocationRoot)
         // Checks if revocationRegistry of public input corresponds to hash of public signals
         res &&= hasher([this.output.meta.revocationRegistry]).toString() ===

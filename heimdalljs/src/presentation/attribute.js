@@ -33,7 +33,7 @@ class AttributePresentation extends Presentation {
 
     }
 
-    async verify(hasher) {
+    async verify(hasher, cred) {
         try {
             let copy = JSON.stringify(stringifyBigInts(this));
             let res = await this.verifyProof();
@@ -50,10 +50,14 @@ class AttributePresentation extends Presentation {
             );
             res &&= hasher([this.output.content.attribute]).toString() === this.publicSignals[6];
             this.output.content.position = 0;
+            // Pass credentials, look for attribute position (index) within the array
+            this.output.content.position = cred.attributes.indexOf(this.output.content.attribute);
+            /*
             for (let i = 0; i < 4; i++) {
                 this.output.content.position += (2 ** i) * this.publicSignals[9 + i];
             }
-            res &&= copy === JSON.stringify(this);
+            */
+            res &&= copy === JSON.stringify(stringifyBigInts(this));
             return Promise.resolve(res);
         } catch (err) {
             return Promise.reject(err);
