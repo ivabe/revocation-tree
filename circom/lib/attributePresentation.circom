@@ -23,6 +23,7 @@ template AttributePresentation(depth, revocationDepth) {
 	*/
 	// Meta
 	signal input challenge; //7
+	signal input out_challenge;
 	signal input expiration; //8
 	signal output type; // 0
 	signal output revocationRoot; //1
@@ -89,6 +90,7 @@ template AttributePresentation(depth, revocationDepth) {
 	getLinkBack.pk[1] <== checkMetaDataIntegrity.issuerPK[1];
 	linkBack <== getLinkBack.out;
 	// End - Link Back
+	out_challenge <== challenge;
 
 	/*
 	* Content calculations
