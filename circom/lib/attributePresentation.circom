@@ -1,4 +1,4 @@
-pragma circom 2.1.4;
+pragma circom 2.1.0;
 include "./metaData.circom";
 include "./contentData.circom";
 include "./checkRevocation.circom";
