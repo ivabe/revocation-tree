@@ -8,7 +8,7 @@ template CheckRevocation(depth) {
     signal input path[depth];
 
     signal output revocationRoot;
-    revocationRoot <== lemma[0];
+    revocationRoot <== lemma[depth+1];
 
 	component merkleProof = MerkleProof(depth);
 	merkleProof.lemma[0] <== lemma[0];
