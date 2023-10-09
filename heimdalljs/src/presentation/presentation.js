@@ -56,6 +56,7 @@ class Presentation {
         this.privateInput.issuerPK = [cred.signature.pk[0], cred.signature.pk[1]];
         let positionRevocationTree = Math.floor(cred.attributes[0] / Number(MAX_LEAF_SIZE));
         let proofRevocation = revocationTree.generateProof(positionRevocationTree);
+        this.revocationRoot = revocationTree.root;
         this.privateInput.pathRevocation = proofRevocation.path;
         this.privateInput.lemmaRevocation = proofRevocation.lemma;
         this.privateInput.revocationLeaf = revocationTree.leaves[positionRevocationTree];
@@ -93,8 +94,10 @@ class Presentation {
             this.privateInput,
             //path.join(root, "zkp", this.type, "circuit.wasm"),
             //path.join(root, "zkp", this.type, "circuit_final.zkey")
-            path.join(root, "zkp", this.type, "ok_attributePresentation.wasm"),
-            path.join(root, "zkp", this.type, "ok_circuit_final.zkey")
+            // path.join(root, "zkp", this.type, "ok_attributePresentation.wasm"),
+            path.join(root, "zkp", this.type, "test.attributePresentation.wasm"),
+            // path.join(root, "zkp", this.type, "ok_circuit_final.zkey")
+            path.join(root, "zkp", this.type, "test.attributePresentation.final.zkey")
         );
         let t1 = performance.now();
         console.log("Prove took " + (t1 - t0) + " milliseconds.");
@@ -120,7 +123,8 @@ class Presentation {
         let root = path.join(require.main.paths[0].split("node_modules")[0].slice(0, -1), "../");
         //let root = path.join(require.main.paths[0].split("node_modules")[0].slice(0, -1));
         //const vKey = JSON.parse(fs.readFileSync(path.join(root, "zkp", this.type, "verification_key.json")));
-        const vKey = JSON.parse(fs.readFileSync(path.join(root, "zkp", this.type, "ok_verification_key.json")));
+        // const vKey = JSON.parse(fs.readFileSync(path.join(root, "zkp", this.type, "ok_verification_key.json")));
+        const vKey = JSON.parse(fs.readFileSync(path.join(root, "zkp", this.type, "test.attributePresentation.verification.key.json")));
 
         let res = await snarkjs.groth16.verify(vKey, this.publicSignals, this.proof).catch(err => console.error(err));
         if (res === true) {
@@ -181,7 +185,7 @@ class Presentation {
         // Reads revocation root from public signal
         this.output.meta.revocationRoot = this.publicSignals[revocationRootIndex];
         // Where is the revocation root?
-        //res &&= BigInt(revocationRoot) === BigInt(this.output.meta.revocationRoot)
+        res &&= BigInt(this.revocationRoot) === BigInt(this.output.meta.revocationRoot)
         // Checks if revocationRegistry of public input corresponds to hash of public signals
         res &&= hasher([this.output.meta.revocationRegistry]).toString() ===
             this.publicSignals[revocationRegistryHashIndex];
