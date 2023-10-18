@@ -36,9 +36,13 @@ const getRevocationRoot = async (source) => {
 
 const getRevocationTree = async (treeName, source) => {
     try {
+        console.log("Treename:", treeName);
+        console.log(source);
         let registryObject;
         if (typeof treeName !== "undefined") {
             registryObject = await fs.readFile(treeName, "utf8");
+            console.log("Tree");
+            registryObject = JSON.parse(registryObject);
         } else {
             let response = await got(source + "/revocation_registry.json");
             registryObject = JSON.parse(response.body);
