@@ -75,6 +75,7 @@ template AttributePresentation(depth, revocationDepth) {
 	// Begin - Check Revocation
 	component checkRevocation = CheckRevocation(revocationDepth);
 	checkRevocation.id <== checkMetaDataIntegrity.id;
+	checkRevocation.revocationLeaf <== revocationLeaf;
 	checkRevocation.lemma[0] <== lemmaRevocation[0];
 	checkRevocation.lemma[revocationDepth + 1] <== lemmaRevocation[revocationDepth + 1];
 	for(var i = 0; i < revocationDepth; i++) {
