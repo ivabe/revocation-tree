@@ -54,12 +54,20 @@ class Presentation {
         }
         this.privateInput.signatureMeta = [cred.signature.R8[0], cred.signature.R8[1], cred.signature.S];
         this.privateInput.issuerPK = [cred.signature.pk[0], cred.signature.pk[1]];
-        let positionRevocationTree = Math.floor(cred.attributes[0] / Number(MAX_LEAF_SIZE));
+        let positionRevocationTree = Math.floor(cred.attributes[0] / Number(MAX_LEAF_SIZE)); // Leaf 4898
         let proofRevocation = revocationTree.generateProof(positionRevocationTree);
+        console.debug(positionRevocationTree);
+        console.debug(proofRevocation);
+        //console.debug(revocationTree.leaves);
+        for (let index = 4800; index < 4900; index++) {
+            console.debug(revocationTree.leaves[index]);
+            
+        }
         this.revocationRoot = revocationTree.root;
         this.privateInput.pathRevocation = proofRevocation.path;
         this.privateInput.lemmaRevocation = proofRevocation.lemma;
         this.privateInput.revocationLeaf = revocationTree.leaves[positionRevocationTree];
+        console.debug(this.privateInput.revocationLeaf);
         this.privateInput.challenge = challenge;
         if (typeof sk !== 'undefined') {
             let signChallenge = signatureGenerator(sk, BigInt(challenge));
@@ -92,11 +100,7 @@ class Presentation {
         let t0 = performance.now();
         const {proof, publicSignals} = await snarkjs.groth16.fullProve(
             this.privateInput,
-            //path.join(root, "zkp", this.type, "circuit.wasm"),
-            //path.join(root, "zkp", this.type, "circuit_final.zkey")
-            // path.join(root, "zkp", this.type, "ok_attributePresentation.wasm"),
             path.join(root, "zkp", this.type, "test.attributePresentation.wasm"),
-            // path.join(root, "zkp", this.type, "ok_circuit_final.zkey")
             path.join(root, "zkp", this.type, "test.attributePresentation.final.zkey")
         );
         let t1 = performance.now();
@@ -122,8 +126,6 @@ class Presentation {
     async verifyProof() {
         let root = path.join(require.main.paths[0].split("node_modules")[0].slice(0, -1), "../");
         //let root = path.join(require.main.paths[0].split("node_modules")[0].slice(0, -1));
-        //const vKey = JSON.parse(fs.readFileSync(path.join(root, "zkp", this.type, "verification_key.json")));
-        // const vKey = JSON.parse(fs.readFileSync(path.join(root, "zkp", this.type, "ok_verification_key.json")));
         const vKey = JSON.parse(fs.readFileSync(path.join(root, "zkp", this.type, "test.attributePresentation.verification.key.json")));
 
         let res = await snarkjs.groth16.verify(vKey, this.publicSignals, this.proof).catch(err => console.error(err));
