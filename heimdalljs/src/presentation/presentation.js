@@ -56,18 +56,14 @@ class Presentation {
         this.privateInput.issuerPK = [cred.signature.pk[0], cred.signature.pk[1]];
         let positionRevocationTree = Math.floor(cred.attributes[0] / Number(MAX_LEAF_SIZE)); // Leaf 4898
         let proofRevocation = revocationTree.generateProof(positionRevocationTree);
-        console.debug(positionRevocationTree);
-        console.debug(proofRevocation);
-        //console.debug(revocationTree.leaves);
-        for (let index = 4800; index < 4900; index++) {
-            console.debug(revocationTree.leaves[index]);
-            
-        }
+        console.log("JS revocation tree proofs");
+        console.log("Proof for position leaf: ", positionRevocationTree);
+        console.log(proofRevocation);
         this.revocationRoot = revocationTree.root;
         this.privateInput.pathRevocation = proofRevocation.path;
         this.privateInput.lemmaRevocation = proofRevocation.lemma;
         this.privateInput.revocationLeaf = revocationTree.leaves[positionRevocationTree];
-        console.debug(this.privateInput.revocationLeaf);
+        console.log("Revocation leaf:", this.privateInput.revocationLeaf);
         this.privateInput.challenge = challenge;
         if (typeof sk !== 'undefined') {
             let signChallenge = signatureGenerator(sk, BigInt(challenge));
