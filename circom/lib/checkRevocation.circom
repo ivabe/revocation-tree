@@ -1,14 +1,21 @@
 include "./merkleproof.circom";
 include "./modulo.circom";
 include "./util.circom";
+include "./circomlib/circuits/poseidon.circom";
 
 template CheckRevocation(depth) {
     signal input id;
     signal input lemma[depth + 2];
     signal input path[depth];
+	signal input revocationLeaf; 
 
     signal output revocationRoot;
     revocationRoot <== lemma[depth+1];
+
+	// revocationLeaf must be include in the lemma/merkle proof
+	component hasher = Poseidon(1);
+	hasher.inputs[0] <== revocationLeaf;
+	hasher.out === lemma[0];
 
 	component merkleProof = MerkleProof(depth);
 	merkleProof.lemma[0] <== lemma[0];
@@ -22,13 +29,11 @@ template CheckRevocation(depth) {
 	modulo.dividend <== id;
 	modulo.modulus <== 252;
 
-    signal leaf;
     signal position;
-	leaf <== modulo.quotient;
 	position <== modulo.reminder;
 
-	component extractBit = extractKthBit(252);// capitalise the template name; 252 vs. 253?!
-	extractBit.in <== leaf;
+	component extractBit = ExtractKthBit(252);// capitalise the template name; 252 vs. 253?!
+	extractBit.in <== revocationLeaf; // leaf number 
 	extractBit.k <== position;
 
     signal output revoked;
