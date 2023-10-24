@@ -5,9 +5,8 @@ services:
     build: .
     volumes:
       - ./:/app
-    working_dir: /app
-    tty: true
-
+    working_dir: /app/heimdalljs
+#    tty: true
 #TODO: write a script which creates trusted setup (*.zkey, verification key and circom)
 #TODO: update circom to 2.0.9 (2.0.9 -> 2.0.6 to make it compatible with ark circom)
 #TODO: create a sample presentation (proof of: age, nationality, address)

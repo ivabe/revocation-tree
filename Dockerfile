@@ -1,4 +1,4 @@
-FROM node:16.0.0
+FROM node:latest
 
 RUN curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh -s -- -y
 RUN /bin/bash -c 'source "$HOME/.cargo/env"'
@@ -10,6 +10,9 @@ RUN /root/.cargo/bin/cargo install --path /app/installation/circom/circom
 RUN git clone https://github.com/iden3/circomlib.git /app/circom/lib/circomlib
 RUN npm install -g snarkjs@latest
 
-# Install heimdalljs
+COPY ./heimdalljs /app/heimdalljs
 WORKDIR /app/heimdalljs
-RUN npm install
+
+RUN npm i
+RUN npm link
+RUN heimdalljs -h
