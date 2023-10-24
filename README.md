@@ -16,6 +16,7 @@ Heimdall is a SSI framework based on generic ZKPs.
 - Build `docker-compose build`
 - Up `docker-compose up`
 - Jump inside the container `docker exec -ti heimdall bash`
+- Use heimdalljs as a container `docker-compose run heimdall heimdalljs key -h`
 
 ## Test
 - Run Mocha tests for Heimdalljs `cd heimdalljs && npm i && npm run test`
