@@ -3,7 +3,8 @@ const {merklePoseidon} = require("../src/crypto/poseidon");
 const fs = require("fs/promises");
 const path = require("path");
 const {stringifyBigInts} = require("../src/util");
-const { exec } = require("child_process");
+const { exec, execSync } = require("child_process");
+const { exit } = require("process");
 require('dotenv').config()
 const MAX_POLYGON_SIZE = 50;
 
@@ -91,15 +92,18 @@ function pushRevocationGitHttps(destination) {
     console.log(authenticatedRepoUrl);
     exec(`git remote add ${remote_name} ${authenticatedRepoUrl}`, (error, stdout, stderr) => {
     if (error) {
-        console.error(`exec error: ${error}`);
-        return;
+        console.warn(`exec warning: ${error}`);
       }
       console.log(`stdout: ${stdout}`);
-      console.error(`stderr: ${stderr}`);
+      console.warn(`stderr: ${stderr}`);
     });
+    // Get current branch
+    const current_branch = execSync("git branch --show-current").toString('utf8').replace(/[\n\r\s]+$/, '');
+    console.log("Current git branch", current_branch);
 
-    exec("git add " +  `${reg} ${roo}` + " && git commit -m 'creating revocation registry'"
-        + ` && git push -u ${remote_name} revoc_tree`, (error, stdout, stderr) => {
+    // git push -u <remote_repo> <local-branch>:<remote-branch>
+    exec("git add " + `${reg} ${roo}` + " && git commit -m 'creating revocation registry'"
+        + ` && git push -u ${remote_name} ${current_branch}:revoc_tree`, (error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
             return;
@@ -111,6 +115,14 @@ function pushRevocationGitHttps(destination) {
         console.log(`stdout: ${stdout}`);
     });
 }
+
+// Function to get the current branch name
+function getGitBranch(command) {
+    console.log("Here");
+    return execSync(command)
+      .toString('utf8')
+      .replace(/[\n\r\s]+$/, '');
+  }
 
 const writeFilesRevocation = async (reg, destination) => {
     reg.tree.leaves = stringifyBigInts(reg.tree.leaves);
