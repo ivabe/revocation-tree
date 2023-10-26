@@ -79,16 +79,24 @@ function pushRevocationGitHttps(destination) {
     //let sig = path.join(destination, "revocation_signature.json");
     
     // Define authentication 
-    const repoUrl = 'https://github.com/ivabe/heimdall.git';
+    const repoUrl = 'https://github.com/ivabe/revocation-tree.git';
     const username = 'ivabe';
-    const token = process.env.GITHUB_TOKEN;
+    const token = process.env.GITHUB_TOKEN_REVOC_TREE;
     const remote_name = "revoc_remote";
     
     exec(`git config --global user.email \"heimdalljs@heimdall.agent\" && git config --global user.name \"heimdalljs\"`);
 
     // Set the credentials in the git url
     const authenticatedRepoUrl = repoUrl.replace('https://', `https://${username}:${token}@`);
-    exec(`git remote add ${remote_name} ${authenticatedRepoUrl}`);
+    console.log(authenticatedRepoUrl);
+    exec(`git remote add ${remote_name} ${authenticatedRepoUrl}`, (error, stdout, stderr) => {
+    if (error) {
+        console.error(`exec error: ${error}`);
+        return;
+      }
+      console.log(`stdout: ${stdout}`);
+      console.error(`stderr: ${stderr}`);
+    });
 
     exec("git add " +  `${reg} ${roo}` + " && git commit -m 'creating revocation registry'"
         + ` && git push -u ${remote_name} revoc_tree`, (error, stdout, stderr) => {
